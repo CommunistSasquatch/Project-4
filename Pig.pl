@@ -6,71 +6,49 @@
 use 5.14.1;
 use warnings;
 
-my (@score);
-my ($continueInt, $die1, $die2, $counter);
-use constant "MAX_DIE" => 6;
-use constant "YES" => 1;
-use constant "LOSE" => 1;
-use constant "MAX_ROLLS"
+my ($continueInt, $die1, $die2, $totalScore);
 
-
-sub main { 
+sub main {
+	showWelcomeScreen();
 	setContinueInt();
-	setCounter();
-	while ($continueInt == YES) {
-		rollPlayer();
-		printResults();
+	while ($continueInt == 1){
+		rollDice();
+		printRolls();
+		addDice();
+		setContinueInt();
 	}
 }
 
 main();
 
-sub setCounter {
-	if (defined $counter) {
-		$counter++;
+sub setContinueInt{
+	if (!(defined $continueInt)){
+		$continueInt = 1;
 	} else {
-		$counter = 0;
-	}
+		print ("\n\nWould you like to play again? (1 for yes 0 for no) ");
+		chomp ($continueInt = <STDIN>);
+	} 
 }
 
-
-sub setContinueInt {
-	$continueInt = 0;
-	print ("\n\nWould you like to continue?(Yes = 1 and No = 0) ");
-	chomp ($continueInt = <STDIN>);
-	if ($continueInt != YES) {
-		printGoodbye();
-	}
-	
+sub rollDice {
+	use constant "DICE_SIDES" => 6;
+	$die1 = (int rand (DICE_SIDES)+1);
+	$die2 = (int rand (DICE_SIDES)+1);
 }
 
-sub rollPlayer {
-	my $continue = 0;
-	chomp ($continue = <STDIN>);
-		for (my $i = 0; $i < 5 ; $i++){
-			$die1 = (int rand(MAX_DIE));
-			$die2 = (int rand(MAX_DIE));
-			sleep 1;
-			#if ($die1 == LOSE || $die2 == LOSE){
-			#	printEndOfRound();
-			#}
-			#$score[$i][$i+1] = ($die1 + $die2)
-		}
+sub showWelcomeScreen {
+	print ("\n\n\t\t\tWelcome To Pig:The game!");
+	print ("\n\t\t\tRules:");
+	print ("");
 }
 
-sub printResults {
-	print ("Player rolled a $die1 and a $die2");
+sub printRolls {
+	print ("\nDie one rolled a: $die1");
+	print ("\nDie two rolled a: $die2");
+	print ("\n$totalScore");
 }
 
-sub printGoodbye {
-	print ("Goodbye");
-	sleep 1;
-	die;
+sub addDice {
+	$totalScore = 0;
+	$totalScore = $die1 +$die2;
 }
-
-sub printEndOfRound {
-	print ("The round is over");
-	sleep 1;
-	
-}
-
