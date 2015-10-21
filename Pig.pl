@@ -6,15 +6,18 @@
 use 5.14.1;
 use warnings;
 
-my ($continueInt, $die1, $die2, $totalScore);
+my ($continueInt, $die1, $die2, $totalScore, $roundTotal);
 
 sub main {
+	$totalScore = 0;
+	$roundTotal = 0; 
 	showWelcomeScreen();
 	setContinueInt();
 	while ($continueInt == 1){
+		decideToRoll();
 		rollDice();
-		printRolls();
 		addDice();
+		printRolls();
 		setContinueInt();
 	}
 }
@@ -45,10 +48,34 @@ sub showWelcomeScreen {
 sub printRolls {
 	print ("\nDie one rolled a: $die1");
 	print ("\nDie two rolled a: $die2");
-	print ("\n$totalScore");
+	print ("\nRound Total is: $roundTotal");
+	print ("\nTotal score for round: $totalScore");
 }
 
 sub addDice {
-	$totalScore = 0;
-	$totalScore = $die1 +$die2;
+	use constant "LOSE" => 1;
+	if ($die1 == LOSE || $die2 == LOSE) {
+		printLostRound();
+		$roundTotal = 0;
+	} elsif ($die1 == LOSE && $die2 == LOSE ) {
+		$totalScore = 0;
+	} else {
+		$roundTotal = $die1 + $die2 + $roundTotal;
+		$totalScore = $roundTotal + $totalScore;
+	}
+}
+
+sub printLostRound {
+	print ("You lost!");
+	sleep 2;
+	
+}
+
+sub decideToRoll {
+	my $decision = 0;
+	print ("Would you like to roll again or pass? (1 for roll again 0 to pass)");
+	chomp ($decision = <STDIN>);
+	if ($decision == 0) {
+		
+	}
 }
