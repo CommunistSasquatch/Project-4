@@ -7,17 +7,20 @@ use 5.14.1;
 use warnings;
 
 my ($continueInt, $die1, $die2, $totalScore, $roundTotal);
+my (@playerScore);
 
 sub main {
 	$totalScore = 0;
 	$roundTotal = 0; 
 	showWelcomeScreen();
 	setContinueInt();
-	while ($continueInt == 1){
-		decideToRoll();
+	while ($continueInt == 1) {
+		#decideToRoll();
 		rollDice();
 		addDice();
-		printRolls();
+		saveToArray();
+		printArray();
+		#printRolls();
 		setContinueInt();
 	}
 }
@@ -75,7 +78,18 @@ sub decideToRoll {
 	my $decision = 0;
 	print ("Would you like to roll again or pass? (1 for roll again 0 to pass)");
 	chomp ($decision = <STDIN>);
-	if ($decision == 0) {
-		
+}
+
+sub saveToArray {
+	my $size = @playerScore;
+	for (my $i = 0; $i <$size; $i++) {
+		@playerScore[$i] = $totalScore;
+	}
+}
+
+sub printArray {
+	my $size = @playerScore;
+	for (my $i = 0; $size < 5; $i++) {
+		print ("\nTotal score for round: $playerScore[$i]");
 	}
 }
