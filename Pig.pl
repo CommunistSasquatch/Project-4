@@ -6,21 +6,25 @@
 use 5.14.1;
 use warnings;
 
-my ($continueInt, $die1, $die2, $totalScore, $roundTotal);
-my (@playerScore);
+my ($continueInt, $die1, $die2, $totalScore, $roundTotal, $player);
+my (@roundScore);
+
+use constant "HUMAN" => 1;
+use constant "AI" => 0;
+use constant "COLUMNS" => 1;
 
 sub main {
+	@roundScore = ([0]);
 	$totalScore = 0;
 	$roundTotal = 0; 
 	showWelcomeScreen();
 	setContinueInt();
 	while ($continueInt == 1) {
-		#decideToRoll();
+		decideToRoll();
 		rollDice();
 		addDice();
 		saveToArray();
-		printArray();
-		#printRolls();
+		printRolls();
 		setContinueInt();
 	}
 }
@@ -30,10 +34,11 @@ main();
 sub setContinueInt{
 	if (!(defined $continueInt)){
 		$continueInt = 1;
-	} else {
+	} while ($continueInt != 1){
 		print ("\n\nWould you like to play again? (1 for yes 0 for no) ");
-		chomp ($continueInt = <STDIN>);
-	} 
+		chomp ($continueInt = <STDIN>); 
+	}
+		
 }
 
 sub rollDice {
@@ -49,14 +54,19 @@ sub showWelcomeScreen {
 }
 
 sub printRolls {
+	system ("cls");
 	print ("\nDie one rolled a: $die1");
 	print ("\nDie two rolled a: $die2");
-	print ("\nRound Total is: $roundTotal");
-	print ("\nTotal score for round: $totalScore");
+	my $size = @roundScore;
+	for (my $i = 0; $i < $size; $i++){
+		print "\nRound Score: $roundScore[$i]";
+	}	
+	#print ("\nTotal score for round: $totalScore");
 }
 
 sub addDice {
 	use constant "LOSE" => 1;
+	my $size = @roundScore;
 	if ($die1 == LOSE || $die2 == LOSE) {
 		printLostRound();
 		$roundTotal = 0;
@@ -76,20 +86,18 @@ sub printLostRound {
 
 sub decideToRoll {
 	my $decision = 0;
-	print ("Would you like to roll again or pass? (1 for roll again 0 to pass)");
+	$player = HUMAN;
+	print ("\n\nWould you like to roll again or pass? (1 for roll again 0 to pass)");
 	chomp ($decision = <STDIN>);
-}
-
-sub saveToArray {
-	my $size = @playerScore;
-	for (my $i = 0; $i <$size; $i++) {
-		@playerScore[$i] = $totalScore;
+	if ($decision == 0) {
+		$player = 1;
 	}
 }
 
-sub printArray {
-	my $size = @playerScore;
-	for (my $i = 0; $size < 5; $i++) {
-		print ("\nTotal score for round: $playerScore[$i]");
+sub saveToArray {
+	
+	my $size = @roundScore;
+	for (my $i = 0; $i < $size; $i++){
+		@roundScore[$i] = $roundTotal;
 	}
 }
