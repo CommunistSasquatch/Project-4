@@ -9,13 +9,14 @@ use warnings;
 my ($continueInt, $die1, $die2, $totalScore, $roundTotal, $player);
 my (@roundScore);
 
-use constant "HUMAN" => 1;
-use constant "AI" => 0;
+use constant "HUMAN" => 0;
+use constant "AI" => 1;
 use constant "COLUMNS" => 1;
 
 sub main {
-	@roundScore = ([0]);
+	@roundScore = ([0],[0]);
 	$totalScore = 0;
+	$player = HUMAN;
 	$roundTotal = 0; 
 	showWelcomeScreen();
 	setContinueInt();
@@ -54,7 +55,6 @@ sub showWelcomeScreen {
 }
 
 sub printRolls {
-	system ("cls");
 	print ("\nDie one rolled a: $die1");
 	print ("\nDie two rolled a: $die2");
 	my $size = @roundScore;
@@ -86,7 +86,6 @@ sub printLostRound {
 
 sub decideToRoll {
 	my $decision = 0;
-	$player = HUMAN;
 	print ("\n\nWould you like to roll again or pass? (1 for roll again 0 to pass)");
 	chomp ($decision = <STDIN>);
 	if ($decision == 0) {
@@ -95,9 +94,10 @@ sub decideToRoll {
 }
 
 sub saveToArray {
-	
 	my $size = @roundScore;
-	for (my $i = 0; $i < $size; $i++){
-		@roundScore[$i] = $roundTotal;
+	if ($player == HUMAN) {
+		for (my $i = 0; $i < $size; $i++){
+		@roundScore [$i],[1]  = $roundTotal;
+		}
 	}
 }
