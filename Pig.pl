@@ -44,8 +44,15 @@ sub setContinueInt{
 
 sub rollDice {
 	use constant "DICE_SIDES" => 6;
-	$die1 = (int rand (DICE_SIDES)+1);
-	$die2 = (int rand (DICE_SIDES)+1);
+	if ($player == HUMAN) {
+		$die1 = (int rand (DICE_SIDES)+1);
+		$die2 = (int rand (DICE_SIDES)+1);
+	} elsif ($player == AI) {
+		while ($die1 != 1 || $die2 != 1){
+			$die1 = (int rand (DICE_SIDES)+1);
+			$die2 = (int rand (DICE_SIDES)+1);
+		}
+	}
 }
 
 sub showWelcomeScreen {
@@ -58,10 +65,15 @@ sub printRolls {
 	print ("\nDie one rolled a: $die1");
 	print ("\nDie two rolled a: $die2");
 	my $size = @roundScore;
-	for (my $i = 0; $i < $size; $i++){
-		print "\nRound Score: $roundScore[$i]";
+	if ($player == HUMAN) {
+		for (my $i = 0; $i < $size - 1; $i++){
+			print "\nHuman Round Score: $roundScore[$i][HUMAN]";
+		}		
+	} else {
+		for (my $i = 0; $i < $size - 1; $i++){
+		print "\nAI Round Score: $roundScore[$i][AI]";
 	}	
-	#print ("\nTotal score for round: $totalScore");
+	}
 }
 
 sub addDice {
@@ -69,9 +81,11 @@ sub addDice {
 	my $size = @roundScore;
 	if ($die1 == LOSE || $die2 == LOSE) {
 		printLostRound();
+		$player = AI;
 		$roundTotal = 0;
 	} elsif ($die1 == LOSE && $die2 == LOSE ) {
 		$totalScore = 0;
+		$player = AI;
 	} else {
 		$roundTotal = $die1 + $die2 + $roundTotal;
 		$totalScore = $roundTotal + $totalScore;
@@ -96,8 +110,12 @@ sub decideToRoll {
 sub saveToArray {
 	my $size = @roundScore;
 	if ($player == HUMAN) {
-		for (my $i = 0; $i < $size; $i++){
-		@roundScore [$i],[1]  = $roundTotal;
+		for (my $i = 0; $i < $size; $i++ ){
+		$roundScore [$i][HUMAN] = $roundTotal;
+		}
+	} if ($player == AI) {
+		for (my $i = 0; $i < $size; $i++) {
+		$roundScore [$i][AI] = $roundTotal;
 		}
 	}
-}
+} 
