@@ -6,7 +6,7 @@
 use 5.14.1;
 use warnings;
 
-my ($continueInt, $die1, $die2, $humanTotalScore, $roundTotal, $player, $aiTotalScore);
+my ($continueInt, $die1, $die2, $humanTotalScore, $roundTotal, $player, $aiTotalScore, $totalScore);
 my (@roundScore);
 
 use constant "HUMAN" => 0;
@@ -63,13 +63,8 @@ sub rollDice {
 		$die1 = (int (rand (DICE_SIDES)+1));
 		$die2 = (int (rand (DICE_SIDES)+1));
 	} elsif ($player == AI) {
-<<<<<<< HEAD
 			$die1 = (int (rand (DICE_SIDES)+1));
 			$die2 = (int (rand (DICE_SIDES)+1));
-=======
-			$die1 = (int rand (DICE_SIDES)+1);
-			$die2 = (int rand (DICE_SIDES)+1);
->>>>>>> f3df2e00297d1eccd144e340452ce2154af43d81
 	}
 }
 
@@ -128,11 +123,7 @@ sub switchPlayer {
 
 sub decideToRoll {
 	my $decision = 0;
-<<<<<<< HEAD
-	print ("\n\nWould you like to roll again or pass? (1 for roll again 0 to pass) ");
-=======
 	print ("\n\nWould you like to roll, or pass? (1 for roll again 0 to pass) ");
->>>>>>> f3df2e00297d1eccd144e340452ce2154af43d81
 	chomp ($decision = <STDIN>);
 	if ($decision == 0) {
 		$player = 1;
