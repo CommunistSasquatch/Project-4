@@ -45,13 +45,11 @@ sub setContinueInt{
 sub rollDice {
 	use constant "DICE_SIDES" => 6;
 	if ($player == HUMAN) {
-		$die1 = (int rand (DICE_SIDES)+1);
-		$die2 = (int rand (DICE_SIDES)+1);
+		$die1 = (int (rand (DICE_SIDES)+1));
+		$die2 = (int (rand (DICE_SIDES)+1));
 	} elsif ($player == AI) {
-		while ($die1 != 1 || $die2 != 1){
-			$die1 = (int rand (DICE_SIDES)+1);
-			$die2 = (int rand (DICE_SIDES)+1);
-		}
+			$die1 = (int (rand (DICE_SIDES)+1));
+			$die2 = (int (rand (DICE_SIDES)+1));
 	}
 }
 
@@ -100,7 +98,7 @@ sub printLostRound {
 
 sub decideToRoll {
 	my $decision = 0;
-	print ("\n\nWould you like to roll again or pass? (1 for roll again 0 to pass)");
+	print ("\n\nWould you like to roll again or pass? (1 for roll again 0 to pass) ");
 	chomp ($decision = <STDIN>);
 	if ($decision == 0) {
 		$player = 1;
