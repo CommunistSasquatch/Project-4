@@ -7,13 +7,14 @@ use 5.14.1;
 use warnings;
 
 my ($continueInt, $die1, $die2, $humanTotalScore, $roundTotal, $player, $aiTotalScore, $totalScore);
-my (@roundScore);
+my (@roundScore, @totalScore);
 
 use constant "HUMAN" => 0;
 use constant "AI" => 1;
 
 sub main {
 	@roundScore = ([0],[0]);
+	@totalScore = ([0]);
 	$humanTotalScore = 0;
 	$aiTotalScore = 0;
 	$player = HUMAN;
