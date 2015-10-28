@@ -6,32 +6,36 @@
 use 5.14.1;
 use warnings;
 
-my ($continueInt, $die1, $die2, $humanTotalScore, $roundTotal, $player, $aiTotalScore, $totalScore);
+my ($continueInt, $die1, $die2, $humanTotalScore, $roundTotal, $player, $aiTotalScore, $scoreToBeAdded);
 my (@roundScore, @totalScore);
 
 use constant "HUMAN" => 0;
 use constant "AI" => 1;
 
 sub main {
-	@roundScore = ([0],[0]);
-	@totalScore = ([0]);
-	$humanTotalScore = 0;
-	$aiTotalScore = 0;
-	$player = HUMAN;
-	$roundTotal = 0; 
+	initilizeVars();
 	showWelcomeScreen();
 	setContinueInt();
 	while ($continueInt == 1) {
 		decideToRoll();
 		rollDice();
 		addDice();
-		saveToArray();
+		saveRoundScoreToArray();
+		saveTotalScoreToArray();
 		printRolls();
 		setContinueInt();
 	}
 }
 
 main();
+
+sub initilizeVars {
+	@totalScore = ([0]);
+	@roundScore = ([0],[0]);
+	$player = HUMAN;
+	$roundTotal = 0;
+	$totalScore [1] = "";
+}
 
 sub setContinueInt{
 	use constant "RULES" => 2;
@@ -60,13 +64,19 @@ sub printRules {
 
 sub rollDice {
 	use constant "DICE_SIDES" => 6;
-	if ($player == HUMAN) {
+	if ($player == HUMAN){
 		$die1 = (int (rand (DICE_SIDES)+1));
 		$die2 = (int (rand (DICE_SIDES)+1));
-	} elsif ($player == AI) {
+	} elsif ($player == AI){
+		while (($die1 != 1 || $die2 != 1) && ($die1 != 1 && $die2 != 1)){
 			$die1 = (int (rand (DICE_SIDES)+1));
 			$die2 = (int (rand (DICE_SIDES)+1));
+		}
+		
+		
 	}
+	
+	
 }
 
 sub showWelcomeScreen {
@@ -80,30 +90,41 @@ sub printRolls {
 	my $size = @roundScore;
 	if ($player == HUMAN) {
 		for (my $i = 0; $i < $size - 1; $i++){
-			print "\nHuman Round Score: $roundScore[$i][HUMAN]";
-			print ("");
+			print ("\nHuman Round Score: $roundScore[$i][HUMAN]");
 		}		
 	} else {
 		for (my $i = 0; $i < $size - 1; $i++){
-		print "\nAI Round Score: $roundScore[$i][AI]";
-		print ("");
+		print ("\nAI Round Score: $roundScore[$i][AI]");
 		}	
 	}
-	
+	print ("\nAI Total Score: $totalScore[AI]");
+	print ("\nHuman Total Score: $totalScore[HUMAN]");
 }
 
 sub addDice {
+	if (! (defined $aiTotalScore) || !(defined $humanTotalScore)){
+		$humanTotalScore = 0;
+		$aiTotalScore = 0;
+	}
 	use constant "LOSE" => 1;
 	my $size = @roundScore;
 	if ($die1 == LOSE || $die2 == LOSE) {
 		printLostRound();
 		$roundTotal = 0;
 	} elsif ($die1 == LOSE && $die2 == LOSE ) {
-		$totalScore = 0;
+		if ($player == HUMAN) {
+			$totalScore[HUMAN] = 0;
+		} if ($player == AI) {
+			$totalScore[AI] = 0;
+		}
 		printLostRound();
 	} else {
 		$roundTotal = $die1 + $die2 + $roundTotal;
-		$totalScore = $roundTotal + $totalScore;
+		if ($player == HUMAN) {
+			$humanTotalScore = $humanTotalScore + $roundTotal;
+		} elsif ($player == AI) {
+			$aiTotalScore = $aiTotalScore + $roundTotal;
+		}
 	}
 }
 
@@ -124,14 +145,28 @@ sub switchPlayer {
 
 sub decideToRoll {
 	my $decision = 0;
+	my $random = 0;
+	use constant "MAX_ROLL" => 2;
+	use constant "ROLL" => 1;
+	use constant "SKIP" => 0;
 	print ("\n\nWould you like to roll, or pass? (1 for roll again 0 to pass) ");
+	if ($player == AI) {
+		sleep 1;
+		$random = (int (rand(MAX_ROLL)));
+				   if ($random == ROLL) {
+						rollDice();
+				   } elsif ($random == SKIP) {
+						$player = HUMAN;	
+				   }
+	}
 	chomp ($decision = <STDIN>);
-	if ($decision == 0) {
-		$player = 1;
+	if ($decision == 0 && $player == HUMAN) {
+		$player = AI;
+		$roundTotal = 0;
 	}
 }
 
-sub saveToArray {
+sub saveRoundScoreToArray {
 	my $size = @roundScore;
 	if ($player == HUMAN) {
 		for (my $i = 0; $i < $size; $i++ ){
@@ -142,4 +177,13 @@ sub saveToArray {
 		$roundScore [$i][AI] = $roundTotal;
 		}
 	}
-} 
+}
+
+sub saveTotalScoreToArray {
+	my $size = @roundScore;
+	if ($player == HUMAN) {
+		$totalScore[HUMAN] = $humanTotalScore;
+	} elsif ($player == AI){
+	$totalScore [AI] = $aiTotalScore;
+	}
+}
