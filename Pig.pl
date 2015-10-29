@@ -11,17 +11,26 @@ my (@roundScore, @totalScore);
 
 use constant "HUMAN" => 0;
 use constant "AI" => 1;
+use constant "DICE_SIDES" => 6;
 
 sub main {
 	initilizeVars();
 	showWelcomeScreen();
 	setContinueInt();
 	while ($continueInt == 1) {
-		decideToRoll();
-		rollDice();
-		addDice();
-		saveRoundScoreToArray();
-		saveTotalScoreToArray();
+		if ($player == HUMAN) {
+			decideToRoll();
+			rollDice();
+			addDice();
+			saveRoundScoreToArray();
+			saveTotalScoreToArray();
+		} elsif ($player == AI) {
+			decideToRollAI();
+			rollAI();
+			addDice();
+			saveRoundScoreToArray();
+			saveTotalScoreToArray();
+		}
 		printRolls();
 		setContinueInt();
 	}
@@ -29,12 +38,31 @@ sub main {
 
 main();
 
+sub decideToRollAI {
+	my $random = 0;
+	use constant "ROLL" => 1;
+	use constant "MAX_ROLL" => 2;
+	$random = (int (rand (MAX_ROLL)+1));
+	if ($random == ROLL){
+		rollAI();
+	} else {
+		$player = HUMAN;
+	}	
+}
+
+sub rollAI {
+	sleep 1;
+	$die1 = (int (rand (DICE_SIDES)+1));
+	$die2 = (int (rand (DICE_SIDES)+1));
+}
+
+
 sub initilizeVars {
 	@totalScore = ([0]);
 	@roundScore = ([0],[0]);
 	$player = HUMAN;
 	$roundTotal = 0;
-	$totalScore [1] = "";
+	$totalScore [1] = 0;
 }
 
 sub setContinueInt{
@@ -63,20 +91,8 @@ sub printRules {
 }
 
 sub rollDice {
-	use constant "DICE_SIDES" => 6;
-	if ($player == HUMAN){
-		$die1 = (int (rand (DICE_SIDES)+1));
-		$die2 = (int (rand (DICE_SIDES)+1));
-	} elsif ($player == AI){
-		while (($die1 != 1 || $die2 != 1) && ($die1 != 1 && $die2 != 1)){
-			$die1 = (int (rand (DICE_SIDES)+1));
-			$die2 = (int (rand (DICE_SIDES)+1));
-		}
-		
-		
-	}
-	
-	
+	$die1 = (int (rand (DICE_SIDES)+1));
+	$die2 = (int (rand (DICE_SIDES)+1));	
 }
 
 sub showWelcomeScreen {
@@ -147,18 +163,7 @@ sub decideToRoll {
 	my $decision = 0;
 	my $random = 0;
 	use constant "MAX_ROLL" => 2;
-	use constant "ROLL" => 1;
-	use constant "SKIP" => 0;
 	print ("\n\nWould you like to roll, or pass? (1 for roll again 0 to pass) ");
-	if ($player == AI) {
-		sleep 1;
-		$random = (int (rand(MAX_ROLL)));
-				   if ($random == ROLL) {
-						rollDice();
-				   } elsif ($random == SKIP) {
-						$player = HUMAN;	
-				   }
-	}
 	chomp ($decision = <STDIN>);
 	if ($decision == 0 && $player == HUMAN) {
 		$player = AI;
