@@ -31,6 +31,7 @@ sub main {
 			saveRoundScoreToArray();
 			saveTotalScoreToArray();
 		}
+		decideWin();
 		printRolls();
 		setContinueInt();
 	}
@@ -38,12 +39,27 @@ sub main {
 
 main();
 
+sub decideWin {
+	use constant "WIN" => 100;
+	if ($totalScore[HUMAN] == WIN) {
+		printWin();
+	} elsif ($totalScore[AI] == WIN) {
+		printWin();
+	}
+}
+
+sub printWin {
+	print ("\n\nYOU WIN!!!!");
+	sleep 1;
+	die;
+}
+
 sub decideToRollAI {
 	my $random = 0;
 	use constant "ROLL" => 1;
 	use constant "MAX_ROLL" => 2;
 	$random = (int (rand (MAX_ROLL)+1));
-	if ($random == ROLL){
+	if ($random == ROLL) {
 		rollAI();
 	} else {
 		$player = HUMAN;
@@ -67,14 +83,14 @@ sub initilizeVars {
 
 sub setContinueInt{
 	use constant "RULES" => 2;
-	if (!(defined $continueInt)){
+	if (!(defined $continueInt)) {
 		$continueInt = 0;
-	} while ($continueInt != 1){
+	} while ($continueInt != 1) {
 		print ("\n\t\tWould You like to play a game, see rules, or quit? \n\t\t\t(0 to quit, 1 to play, 2 to see rules) ");
 		chomp ($continueInt = <STDIN>);
 		if ($continueInt == RULES) {
 			printRules();
-		} elsif ($continueInt == 0){
+		} elsif ($continueInt == 0) {
 			die;
 		}
 	}
